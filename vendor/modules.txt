@@ -152,8 +152,6 @@ github.com/coreos/vcontext/validate
 # github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 ## explicit
 github.com/davecgh/go-spew/spew
-# github.com/distribution/reference v0.5.0
-## explicit; go 1.20
 # github.com/emicklei/go-restful/v3 v3.11.0
 ## explicit; go 1.13
 github.com/emicklei/go-restful/v3
@@ -280,7 +278,7 @@ github.com/google/go-cmp/cmp/internal/value
 ## explicit; go 1.12
 github.com/google/gofuzz
 github.com/google/gofuzz/bytesource
-# github.com/google/pprof v0.0.0-20230502171905-255e3b9b56de
+# github.com/google/pprof v0.0.0-20230510103437-eeec1cb781c3
 ## explicit; go 1.19
 github.com/google/pprof/profile
 # github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
@@ -846,7 +844,7 @@ golang.org/x/text/width
 # golang.org/x/time v0.3.0
 ## explicit
 golang.org/x/time/rate
-# golang.org/x/tools v0.16.1
+# golang.org/x/tools v0.17.0
 ## explicit; go 1.18
 golang.org/x/tools/go/ast/inspector
 # gomodules.xyz/jsonpatch/v2 v2.4.0
@@ -864,7 +862,7 @@ google.golang.org/appengine/urlfetch
 # google.golang.org/genproto/googleapis/api v0.0.0-20231120223509-83a465c0220f
 ## explicit; go 1.19
 google.golang.org/genproto/googleapis/api/expr/v1alpha1
-# google.golang.org/genproto/googleapis/rpc v0.0.0-20231212172506-995d672761c0
+# google.golang.org/genproto/googleapis/rpc v0.0.0-20240108191215-35c7eff3a6b1
 ## explicit; go 1.19
 google.golang.org/genproto/googleapis/rpc/status
 # google.golang.org/grpc v1.60.1
@@ -1534,7 +1532,7 @@ maistra.io/api/core/v2
 ## explicit; go 1.20
 open-cluster-management.io/governance-policy-propagator/api/v1
 open-cluster-management.io/governance-policy-propagator/api/v1beta1
-# open-cluster-management.io/multicloud-operators-subscription v0.11.0
+# open-cluster-management.io/multicloud-operators-subscription v0.13.0
 ## explicit; go 1.20
 open-cluster-management.io/multicloud-operators-subscription/pkg/apis/apps/placementrule/v1
 # sigs.k8s.io/controller-runtime v0.16.3 => sigs.k8s.io/controller-runtime v0.16.3
