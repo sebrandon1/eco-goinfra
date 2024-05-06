@@ -36,19 +36,27 @@ type AgentAdditionalOptions func(builder *agentBuilder) (*agentBuilder, error)
 // Users cannot create agent resources themselves as they are generated from the operator.
 func newAgentBuilder(apiClient goclient.Client, definition *agentInstallV1Beta1.Agent) *agentBuilder {
 	if definition == nil {
+		glog.V(100).Infof("The agent definition is nil")
+
+		return nil
+	}
+
+	if apiClient == nil {
+		glog.V(100).Infof("The apiClient is nil")
+
 		return nil
 	}
 
 	glog.V(100).Infof("Initializing new agent structure for the following agent %s",
 		definition.Name)
 
-	builder := agentBuilder{
+	builder := &agentBuilder{
 		apiClient:  apiClient,
 		Definition: definition,
 		Object:     definition,
 	}
 
-	return &builder
+	return builder
 }
 
 // PullAgent pulls existing agent from cluster.
@@ -74,13 +82,13 @@ func PullAgent(apiClient *clients.Settings, name, nsname string) (*agentBuilder,
 	if name == "" {
 		glog.V(100).Infof("The name of the agent is empty")
 
-		builder.errorMsg = "agent 'name' cannot be empty"
+		return nil, fmt.Errorf("agent 'name' cannot be empty")
 	}
 
 	if nsname == "" {
 		glog.V(100).Infof("The namespace of the agent is empty")
 
-		builder.errorMsg = "agent 'namespace' cannot be empty"
+		return nil, fmt.Errorf("agent 'namespace' cannot be empty")
 	}
 
 	if !builder.Exists() {
@@ -98,6 +106,14 @@ func (builder *agentBuilder) WithHostName(hostname string) *agentBuilder {
 		return builder
 	}
 
+	if hostname == "" {
+		glog.V(100).Infof("The hostname parameter is empty")
+
+		builder.errorMsg = "hostname cannot be empty"
+
+		return builder
+	}
+
 	glog.V(100).Infof("Setting agent %s in namespace %s hostname to %s",
 		builder.Definition.Name, builder.Definition.Namespace, hostname)
 
@@ -106,9 +122,7 @@ func (builder *agentBuilder) WithHostName(hostname string) *agentBuilder {
 			builder.Definition.Name, builder.Definition.Namespace)
 
 		builder.errorMsg = nonExistentMsg
-	}
 
-	if builder.errorMsg != "" {
 		return builder
 	}
 
