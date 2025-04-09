@@ -10,7 +10,7 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/openshift-kni/eco-goinfra/pkg/clients"
-	"github.com/openshift-kni/eco-goinfra/pkg/msg"
+	"github.com/openshift-kni/eco-goinfra/pkg/common"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
@@ -30,6 +30,8 @@ type Builder struct {
 	// object is created.
 	errorMsg  string
 	apiClient appsv1Typed.AppsV1Interface
+	// ResourceCRUD centralizes resource operations.
+	common.ResourceCRUD
 }
 
 // AdditionalOptions additional options for deployment object.
@@ -60,6 +62,10 @@ func NewBuilder(
 				Name:      name,
 				Namespace: nsname,
 			},
+		},
+		ResourceCRUD: &common.AppsV1ResourceCRUD{
+			Client:     apiClient.AppsV1Interface,
+			StructType: common.DeploymentType,
 		},
 	}
 
@@ -110,6 +116,10 @@ func Pull(apiClient *clients.Settings, name, nsname string) (*Builder, error) {
 				Name:      name,
 				Namespace: nsname,
 			},
+		},
+		ResourceCRUD: &common.AppsV1ResourceCRUD{
+			Client:     apiClient.AppsV1Interface,
+			StructType: common.DeploymentType,
 		},
 	}
 
@@ -432,8 +442,15 @@ func (builder *Builder) Create() (*Builder, error) {
 
 	var err error
 	if !builder.Exists() {
-		builder.Object, err = builder.apiClient.Deployments(builder.Definition.Namespace).Create(
-			context.TODO(), builder.Definition, metav1.CreateOptions{})
+		result, err := builder.ResourceCRUD.Create(
+			builder.Definition.Namespace, builder.Definition.Name, builder.Definition)
+		if err != nil {
+			glog.V(100).Infof("Failed to create deployment. Error is: '%s'", err.Error())
+
+			return builder, err
+		}
+
+		builder.Object = result.(*appsv1.Deployment)
 	}
 
 	return builder, err
@@ -447,11 +464,15 @@ func (builder *Builder) Update() (*Builder, error) {
 
 	glog.V(100).Infof("Updating deployment %s in namespace %s", builder.Definition.Name, builder.Definition.Namespace)
 
-	var err error
-	builder.Object, err = builder.apiClient.Deployments(builder.Definition.Namespace).Update(
-		context.TODO(), builder.Definition, metav1.UpdateOptions{})
+	result, err := builder.ResourceCRUD.Update(
+		builder.Definition.Namespace, builder.Definition.Name, builder.Definition)
+	if err != nil {
+		glog.V(100).Infof("Failed to update deployment. Error is: '%s'", err.Error())
+		return builder, err
+	}
 
-	return builder, err
+	builder.Object = result.(*appsv1.Deployment)
+	return builder, nil
 }
 
 // Delete removes a deployment.
@@ -460,27 +481,13 @@ func (builder *Builder) Delete() error {
 		return err
 	}
 
-	glog.V(100).Infof("Deleting deployment %s in namespace %s",
-		builder.Definition.Name, builder.Definition.Namespace)
+	glog.V(100).Infof("Deleting deployment %s in namespace %s", builder.Definition.Name, builder.Definition.Namespace)
 
-	if !builder.Exists() {
-		glog.V(100).Infof("Deployment %s in namespace %s does not exist",
-			builder.Definition.Name, builder.Definition.Namespace)
-
-		builder.Object = nil
-
-		return nil
-	}
-
-	err := builder.apiClient.Deployments(builder.Definition.Namespace).Delete(
-		context.TODO(), builder.Definition.Name, metav1.DeleteOptions{})
-
-	if err != nil {
+	if err := builder.ResourceCRUD.Delete(builder.Definition); err != nil {
 		return err
 	}
 
 	builder.Object = nil
-
 	return nil
 }
 
@@ -601,9 +608,7 @@ func (builder *Builder) DeleteAndWait(timeout time.Duration) error {
 	// Polls the deployment every second until it is removed.
 	return wait.PollUntilContextTimeout(
 		context.TODO(), time.Second, timeout, true, func(ctx context.Context) (bool, error) {
-			_, err := builder.apiClient.Deployments(builder.Definition.Namespace).Get(
-				context.TODO(), builder.Definition.Name, metav1.GetOptions{})
-			if k8serrors.IsNotFound(err) {
+			if !builder.Exists() {
 				return true, nil
 			}
 
@@ -613,18 +618,25 @@ func (builder *Builder) DeleteAndWait(timeout time.Duration) error {
 
 // Exists checks whether the given deployment exists.
 func (builder *Builder) Exists() bool {
-	if valid, _ := builder.validate(); !valid {
+	result, err := builder.ResourceCRUD.Exists(
+		builder.Definition.Namespace, builder.Definition.Name)
+
+	if err != nil && !k8serrors.IsNotFound(err) {
+		glog.V(100).Infof("Failed to check if deployment exists. Error is: '%s'", err.Error())
+
 		return false
 	}
 
-	glog.V(100).Infof("Checking if deployment %s exists in namespace %s",
-		builder.Definition.Name, builder.Definition.Namespace)
+	if result == nil {
+		glog.V(100).Infof("Deployment %s in namespace %s does not exist",
+			builder.Definition.Name, builder.Definition.Namespace)
 
-	var err error
-	builder.Object, err = builder.apiClient.Deployments(builder.Definition.Namespace).Get(
-		context.TODO(), builder.Definition.Name, metav1.GetOptions{})
+		return false
+	}
 
-	return err == nil || !k8serrors.IsNotFound(err)
+	glog.V(100).Infof("Deployment %s in namespace %s exists", builder.Definition.Name, builder.Definition.Namespace)
+	builder.Object = result.(*appsv1.Deployment)
+	return true
 }
 
 // WaitUntilCondition waits for the duration of the defined timeout or until the
@@ -686,36 +698,26 @@ func GetGVR() schema.GroupVersionResource {
 	return schema.GroupVersionResource{Group: "apps", Version: "v1", Resource: "deployments"}
 }
 
-// validate will check that the builder and builder definition are properly initialized before
-// accessing any member fields.
+// Add methods to implement the BuilderInterface.
+func (builder *Builder) GetDefinition() interface{} {
+	return builder.Definition
+}
+
+func (builder *Builder) GetErrorMsg() string {
+	return builder.errorMsg
+}
+
+func (builder *Builder) GetAPIClient() interface{} {
+	return builder.apiClient
+}
+
+func (builder *Builder) GetResourceType() string {
+	return common.DeploymentType
+}
+
+// Replace the validate() method with a call to common.ValidateBuilder.
 func (builder *Builder) validate() (bool, error) {
-	resourceCRD := "ClusterDeployment"
-
-	if builder == nil {
-		glog.V(100).Infof("The %s builder is uninitialized", resourceCRD)
-
-		return false, fmt.Errorf("error: received nil %s builder", resourceCRD)
-	}
-
-	if builder.Definition == nil {
-		glog.V(100).Infof("The %s is undefined", resourceCRD)
-
-		return false, fmt.Errorf("%s", msg.UndefinedCrdObjectErrString(resourceCRD))
-	}
-
-	if builder.apiClient == nil {
-		glog.V(100).Infof("The %s builder apiclient is nil", resourceCRD)
-
-		return false, fmt.Errorf("%s builder cannot have nil apiClient", resourceCRD)
-	}
-
-	if builder.errorMsg != "" {
-		glog.V(100).Infof("The %s builder has error message: %s", resourceCRD, builder.errorMsg)
-
-		return false, fmt.Errorf("%s", builder.errorMsg)
-	}
-
-	return true, nil
+	return common.ValidateBuilder(builder)
 }
 
 // WithToleration applies a toleration to the deployment's definition.

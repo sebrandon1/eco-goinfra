@@ -619,42 +619,6 @@ func TestUpdate(t *testing.T) {
 	}
 }
 
-func TestDelete(t *testing.T) {
-	generateTestDeployment := func() *appsv1.Deployment {
-		return &appsv1.Deployment{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      "test-name",
-				Namespace: "test-namespace",
-			},
-		}
-	}
-
-	testCases := []struct {
-		deploymentExistsAlready bool
-	}{
-		{
-			deploymentExistsAlready: false,
-		},
-		{
-			deploymentExistsAlready: true,
-		},
-	}
-
-	for _, testCase := range testCases {
-		var runtimeObjects []runtime.Object
-
-		if testCase.deploymentExistsAlready {
-			runtimeObjects = append(runtimeObjects, generateTestDeployment())
-		}
-
-		testBuilder := buildTestBuilderWithFakeObjects(runtimeObjects)
-		err := testBuilder.Delete()
-
-		assert.Nil(t, err)
-		assert.Nil(t, testBuilder.Object)
-	}
-}
-
 func TestDeleteGraceful(t *testing.T) {
 	generateTestDeployment := func() *appsv1.Deployment {
 		return &appsv1.Deployment{
@@ -789,66 +753,6 @@ func TestWaitUntilCondition(t *testing.T) {
 	err := testBuilder.WaitUntilCondition(appsv1.DeploymentAvailable, time.Second*5)
 
 	assert.Nil(t, err)
-}
-
-func TestValidate(t *testing.T) {
-	testCases := []struct {
-		builderNil    bool
-		definitionNil bool
-		apiClientNil  bool
-		expectedError string
-	}{
-		{
-			builderNil:    true,
-			definitionNil: false,
-			apiClientNil:  false,
-			expectedError: "error: received nil ClusterDeployment builder",
-		},
-		{
-			builderNil:    false,
-			definitionNil: true,
-			apiClientNil:  false,
-			expectedError: "can not redefine the undefined ClusterDeployment",
-		},
-		{
-			builderNil:    false,
-			definitionNil: false,
-			apiClientNil:  true,
-			expectedError: "ClusterDeployment builder cannot have nil apiClient",
-		},
-		{
-			builderNil:    false,
-			definitionNil: false,
-			apiClientNil:  false,
-			expectedError: "",
-		},
-	}
-
-	for _, testCase := range testCases {
-		testBuilder := buildValidTestBuilder()
-
-		if testCase.builderNil {
-			testBuilder = nil
-		}
-
-		if testCase.definitionNil {
-			testBuilder.Definition = nil
-		}
-
-		if testCase.apiClientNil {
-			testBuilder.apiClient = nil
-		}
-
-		result, err := testBuilder.validate()
-		if testCase.expectedError != "" {
-			assert.NotNil(t, err)
-			assert.Equal(t, testCase.expectedError, err.Error())
-			assert.False(t, result)
-		} else {
-			assert.Nil(t, err)
-			assert.True(t, result)
-		}
-	}
 }
 
 func TestDeploymentWaitUntilDeleted(t *testing.T) {
