@@ -264,6 +264,63 @@ func TestImageStreamGetDockerImage(t *testing.T) {
 	}
 }
 
+func TestImageStreamGetStatusTags(t *testing.T) {
+	testCases := []struct {
+		testImageStreamStatus imagev1.ImageStreamStatus
+		expectedError         error
+		expectedTags          []string
+	}{
+		{
+			testImageStreamStatus: imagev1.ImageStreamStatus{
+				Tags: []imagev1.NamedTagEventList{
+					{Tag: "5.14.0-427.81.1.el9_4.x86_64"},
+					{Tag: "5.14.0-427.85.1.el9_4.x86_64"},
+				},
+			},
+			expectedError: nil,
+			expectedTags:  []string{"5.14.0-427.81.1.el9_4.x86_64", "5.14.0-427.85.1.el9_4.x86_64"},
+		},
+		{
+			testImageStreamStatus: imagev1.ImageStreamStatus{
+				Tags: []imagev1.NamedTagEventList{},
+			},
+			expectedError: fmt.Errorf("imageStream object network-tools in namespace openshift has no status tags"),
+			expectedTags:  nil,
+		},
+	}
+
+	for _, testCase := range testCases {
+		var runtimeObjects []runtime.Object
+
+		testImageStream := &imagev1.ImageStream{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      imageStreamName,
+				Namespace: imageStreamNamespace,
+			},
+			Status: testCase.testImageStreamStatus,
+		}
+		runtimeObjects = append(runtimeObjects, testImageStream)
+
+		testSettings := clients.GetTestClients(clients.TestClientParams{
+			K8sMockObjects:  runtimeObjects,
+			SchemeAttachers: testSchemes,
+		})
+
+		builder, err := Pull(testSettings, imageStreamName, imageStreamNamespace)
+		assert.NoError(t, err)
+		assert.NotNil(t, builder)
+
+		tags, err := builder.GetStatusTags()
+		assert.Equal(t, testCase.expectedError, err)
+
+		if testCase.expectedError == nil {
+			assert.Equal(t, testCase.expectedTags, tags)
+		} else {
+			assert.Nil(t, tags)
+		}
+	}
+}
+
 func buildValidImageStreamBuilder(apiClient *clients.Settings) *Builder {
 	imageStreamBuilder := newBuilder(
 		apiClient, imageStreamName, imageStreamNamespace)
