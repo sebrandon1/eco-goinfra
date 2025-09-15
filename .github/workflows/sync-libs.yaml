@@ -18,7 +18,7 @@ jobs:
     outputs:
       pr-url: ${{ steps.create-pr.outputs.pull-request-url }}
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       SHELL: /bin/bash
 
