@@ -96,6 +96,7 @@ func (builder *Builder) Exists() bool {
 	glog.V(100).Infof("Checking if ClusterVersion %s exists", builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)
@@ -196,6 +197,7 @@ func (builder *Builder) WaitUntilConditionTrue(
 	return wait.PollUntilContextTimeout(
 		context.TODO(), time.Second, timeout, true, func(ctx context.Context) (bool, error) {
 			var err error
+
 			builder.Object, err = builder.Get()
 
 			if err != nil {
@@ -238,6 +240,7 @@ func (builder *Builder) WaitUntilUpdateHistoryStateTrue(
 	return wait.PollUntilContextTimeout(
 		context.TODO(), time.Second, timeout, true, func(ctx context.Context) (bool, error) {
 			var err error
+
 			builder.Object, err = builder.Get()
 
 			if err != nil {

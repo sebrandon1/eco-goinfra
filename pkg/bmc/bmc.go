@@ -889,6 +889,7 @@ func (bmc *BMC) RunCLICommand(
 	var combinedOutput []byte
 
 	errCh := make(chan error)
+
 	go func() {
 		var err error
 		if combineOutput {
@@ -896,6 +897,7 @@ func (bmc *BMC) RunCLICommand(
 		} else {
 			err = sshSession.Run(cmd)
 		}
+
 		errCh <- err
 	}()
 

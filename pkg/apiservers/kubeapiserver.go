@@ -66,6 +66,7 @@ func (builder *KubeAPIServerBuilder) Exists() bool {
 	}
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	if err != nil {

@@ -170,6 +170,7 @@ func (builder *Builder) Update() (*Builder, error) {
 	glog.V(100).Infof("Updating the namespace %s with the namespace definition in the builder", builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.apiClient.Namespaces().Update(
 		context.TODO(), builder.Definition, metav1.UpdateOptions{})
 
@@ -239,6 +240,7 @@ func (builder *Builder) Exists() bool {
 	glog.V(100).Infof("Checking if namespace %s exists", builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.apiClient.Namespaces().Get(
 		context.TODO(), builder.Definition.Name, metav1.GetOptions{})
 

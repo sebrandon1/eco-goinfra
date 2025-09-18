@@ -43,6 +43,7 @@ func (builder *StateBuilder) Exists() bool {
 	glog.V(100).Infof("Checking if NodeNetworkState %s exists", builder.Object.Name)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	if err != nil {

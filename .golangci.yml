@@ -40,7 +40,8 @@ linters:
     - unparam
     - usetesting
     - varnamelen
-    # Temporarily disable whitespace-stylistic linter due to high noise
+    # Temporarily disabled to reduce noise while we address style fixes in a separate branch.
+    # See branch 'golangci_wsl_fixes' for incremental fixes. Re-enable once stabilized.
     # - wsl_v5
   settings:
     depguard:

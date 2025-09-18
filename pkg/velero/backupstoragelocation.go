@@ -175,6 +175,7 @@ func (builder *BackupStorageLocationBuilder) WaitUntilAvailable(
 	}
 
 	var err error
+
 	err = wait.PollUntilContextTimeout(
 		context.TODO(), time.Second, timeout, true, func(ctx context.Context) (bool, error) {
 			glog.V(100).Infof("Waiting for the backupstoragelocation %s in %s to become available",
@@ -208,6 +209,7 @@ func (builder *BackupStorageLocationBuilder) WaitUntilUnavailable(
 	}
 
 	var err error
+
 	err = wait.PollUntilContextTimeout(
 		context.TODO(), time.Second, timeout, true, func(ctx context.Context) (bool, error) {
 			glog.V(100).Infof("Waiting for the backupstoragelocation %s in %s to become unavailable",
@@ -261,6 +263,7 @@ func (builder *BackupStorageLocationBuilder) Exists() bool {
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)

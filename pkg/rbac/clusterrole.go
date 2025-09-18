@@ -224,6 +224,7 @@ func (builder *ClusterRoleBuilder) Update() (*ClusterRoleBuilder, error) {
 	}
 
 	var err error
+
 	builder.Object, err = builder.apiClient.ClusterRoles().Update(
 		context.TODO(), builder.Definition, metav1.UpdateOptions{})
 
@@ -240,6 +241,7 @@ func (builder *ClusterRoleBuilder) Exists() bool {
 		builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.apiClient.ClusterRoles().Get(
 		context.TODO(), builder.Definition.Name, metav1.GetOptions{})
 

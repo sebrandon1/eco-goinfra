@@ -269,7 +269,6 @@ func (builder *IbguBuilder) Get() (*v1alpha1.ImageBasedGroupUpgrade, error) {
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	imagebasedgroupupgrade := &v1alpha1.ImageBasedGroupUpgrade{}
-
 	err := builder.apiClient.Get(context.TODO(), goclient.ObjectKey{
 		Name:      builder.Definition.Name,
 		Namespace: builder.Definition.Namespace,
@@ -295,6 +294,7 @@ func (builder *IbguBuilder) Exists() bool {
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)
@@ -462,6 +462,7 @@ func (builder *IbguBuilder) WaitForCondition(expected metav1.Condition, timeout 
 	err := wait.PollUntilContextTimeout(
 		context.TODO(), 10*time.Second, timeout, true, func(ctx context.Context) (bool, error) {
 			var err error
+
 			builder.Object, err = builder.Get()
 
 			if err != nil {

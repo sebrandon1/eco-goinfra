@@ -256,6 +256,7 @@ func appendToExistingReportFile(outputFile string, newReport *TestSuite) {
 	}
 
 	var reportTestSuite *TestSuite
+
 	err = xml.Unmarshal(existingTestSuiteByteFormat, &reportTestSuite)
 
 	if err != nil {
@@ -319,6 +320,7 @@ func failureMessage(failure types.Failure) string {
 //nolint:gochecknoinits
 func init() {
 	var err error
+
 	config, err = newConfig()
 
 	if err != nil {

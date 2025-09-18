@@ -216,6 +216,7 @@ func (builder *SeedGeneratorBuilder) Exists() bool {
 		builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)
@@ -283,6 +284,7 @@ func (builder *SeedGeneratorBuilder) WaitUntilComplete(timeout time.Duration) (*
 
 	// Polls periodically to determine if seedgenerator is in desired state.
 	var err error
+
 	err = wait.PollUntilContextTimeout(
 		context.TODO(), time.Second*3, timeout, true, func(ctx context.Context) (bool, error) {
 			builder.Object, err = builder.Get()

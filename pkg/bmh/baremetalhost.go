@@ -495,6 +495,7 @@ func (builder *BmhBuilder) Exists() bool {
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)
@@ -672,6 +673,7 @@ func (builder *BmhBuilder) WaitUntilAnnotationExists(annotation string, timeout 
 	}
 
 	var err error
+
 	err = wait.PollUntilContextTimeout(
 		context.TODO(), time.Second, timeout, true, func(ctx context.Context) (bool, error) {
 			builder.Object, err = builder.Get()

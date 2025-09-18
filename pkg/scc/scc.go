@@ -621,6 +621,7 @@ func (builder *Builder) Exists() bool {
 	glog.V(100).Infof("Checking if SecurityContextConstraints %s exists", builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	if err != nil {

@@ -215,6 +215,7 @@ func StaticIPBondAnnotationWithInterface(
 		if staticAnnotation == nil {
 			return nil
 		}
+
 		annotation = append(annotation, staticAnnotation)
 	}
 

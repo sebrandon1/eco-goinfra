@@ -163,6 +163,7 @@ func (builder *Builder) Update() (*Builder, error) {
 	builder.Definition.ResourceVersion = ""
 
 	var err error
+
 	builder.Object, err = builder.apiClient.CoreV1().Nodes().Update(
 		context.TODO(), builder.Definition, metav1.UpdateOptions{})
 
@@ -178,6 +179,7 @@ func (builder *Builder) Exists() bool {
 	glog.V(100).Infof("Checking if node %s exists", builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.apiClient.CoreV1().Nodes().Get(
 		context.TODO(), builder.Definition.Name, metav1.GetOptions{})
 
@@ -307,6 +309,7 @@ func (builder *Builder) ExternalIPv4Network() (string, error) {
 	}
 
 	var extNetwork ExternalNetworks
+
 	err := json.Unmarshal([]byte(builder.Object.Annotations[ovnExternalAddresses]), &extNetwork)
 
 	if err != nil {
@@ -334,6 +337,7 @@ func (builder *Builder) ExternalIPv6Network() (string, error) {
 	}
 
 	var extNetwork ExternalNetworks
+
 	err := json.Unmarshal([]byte(builder.Object.Annotations[ovnExternalAddresses]), &extNetwork)
 
 	if err != nil {

@@ -216,6 +216,7 @@ func (builder *ClusterRoleBindingBuilder) Update() (*ClusterRoleBindingBuilder, 
 		builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.apiClient.ClusterRoleBindings().Update(
 		context.TODO(), builder.Definition, metav1.UpdateOptions{})
 
@@ -232,6 +233,7 @@ func (builder *ClusterRoleBindingBuilder) Exists() bool {
 		builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.apiClient.ClusterRoleBindings().Get(
 		context.TODO(), builder.Definition.Name, metav1.GetOptions{})
 

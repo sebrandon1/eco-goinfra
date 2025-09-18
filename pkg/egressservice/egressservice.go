@@ -194,6 +194,7 @@ func (builder *EgressServiceBuilder) Exists() bool {
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)
@@ -209,7 +210,6 @@ func (builder *EgressServiceBuilder) Get() (*egresssvcv1.EgressService, error) {
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	egrSvc := &egresssvcv1.EgressService{}
-
 	err := builder.apiClient.Get(context.TODO(), goclient.ObjectKey{
 		Name:      builder.Definition.Name,
 		Namespace: builder.Definition.Namespace,
@@ -270,7 +270,6 @@ func (builder *EgressServiceBuilder) Delete() (*EgressServiceBuilder, error) {
 	}
 
 	err := builder.apiClient.Delete(context.TODO(), builder.Definition)
-
 	if err != nil {
 		glog.V(100).Infof("Error deleting EgressService: %v", err)
 
@@ -295,7 +294,6 @@ func (builder *EgressServiceBuilder) Update() (*EgressServiceBuilder, error) {
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	err := builder.apiClient.Update(context.TODO(), builder.Definition)
-
 	if err != nil {
 		glog.V(100).Infof("Error updating EgressService: %v", err)
 

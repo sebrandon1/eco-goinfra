@@ -232,6 +232,7 @@ func (builder *PtpConfigBuilder) Exists() bool {
 		"Checking if PtpConfig %s exists in namespace %s", builder.Definition.Name, builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	if err != nil {

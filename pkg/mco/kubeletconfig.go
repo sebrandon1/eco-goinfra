@@ -120,6 +120,7 @@ func (builder *KubeletConfigBuilder) Get() (*mcv1.KubeletConfig, error) {
 	glog.V(100).Infof("Getting KubeletConfig object %s", builder.Definition.Name)
 
 	kubeletConfig := &mcv1.KubeletConfig{}
+
 	err := builder.apiClient.Get(context.TODO(), runtimeclient.ObjectKey{Name: builder.Definition.Name}, kubeletConfig)
 
 	if err != nil {
@@ -185,6 +186,7 @@ func (builder *KubeletConfigBuilder) Exists() bool {
 	glog.V(100).Infof("Checking if the kubeletconfig object %s exists", builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)

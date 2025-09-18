@@ -76,6 +76,7 @@ func (builder *ValidatingConfigurationBuilder) Exists() bool {
 	}
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)

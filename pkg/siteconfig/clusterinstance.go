@@ -454,6 +454,7 @@ func (builder *CIBuilder) WaitForCondition(expected metav1.Condition, timeout ti
 	err := wait.PollUntilContextTimeout(
 		context.TODO(), 3*time.Second, timeout, true, func(ctx context.Context) (bool, error) {
 			var err error
+
 			builder.Object, err = builder.Get()
 
 			if err != nil {

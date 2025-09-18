@@ -82,6 +82,7 @@ func ListExternalIPv4Networks(apiClient *clients.Settings, options ...metav1.Lis
 			return nil, fmt.Errorf(
 				"error getting external IPv4 address from node %s due to %w", node.Definition.Name, err)
 		}
+
 		ipV4ExternalAddresses = append(ipV4ExternalAddresses, extNodeNetwork)
 	}
 
@@ -107,6 +108,7 @@ func ListExternalIPv6Networks(apiClient *clients.Settings, options ...metav1.Lis
 			return nil, fmt.Errorf(
 				"error getting external IPv6 address from node %s due to %w", node.Definition.Name, err)
 		}
+
 		ipV6ExternalAddresses = append(ipV6ExternalAddresses, extNodeNetwork)
 	}
 

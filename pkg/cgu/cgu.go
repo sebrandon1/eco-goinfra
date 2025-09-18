@@ -234,6 +234,7 @@ func (builder *CguBuilder) Exists() bool {
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)
@@ -463,6 +464,7 @@ func (builder *CguBuilder) WaitUntilClusterInState(cluster, state string, timeou
 	}
 
 	var err error
+
 	err = wait.PollUntilContextTimeout(
 		context.TODO(), 3*time.Second, timeout, true, func(ctx context.Context) (bool, error) {
 			builder.Object, err = builder.Get()
@@ -515,6 +517,7 @@ func (builder *CguBuilder) WaitUntilBackupStarts(timeout time.Duration) (*CguBui
 	}
 
 	var err error
+
 	err = wait.PollUntilContextTimeout(context.TODO(), 3*time.Second, timeout, true, func(context.Context) (bool, error) {
 		builder.Object, err = builder.Get()
 		if err != nil {

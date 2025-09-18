@@ -215,8 +215,8 @@ func newConfig(pathToConfigFiles string) []repo {
 			glog.V(100).Infof("Loading config file %s", info.Name())
 
 			var config []repo
-			err := readFile(&config, path)
 
+			err := readFile(&config, path)
 			if err != nil {
 				glog.V(100).Infof("Error to read config file: %w", err)
 
@@ -280,6 +280,7 @@ func refactorFunc(oldLine, newLine string, filePatterns []string) fs.WalkDirFunc
 
 		for _, pattern := range filePatterns {
 			var err error
+
 			matched, err = filepath.Match(pattern, dirEntry.Name())
 
 			if err != nil {

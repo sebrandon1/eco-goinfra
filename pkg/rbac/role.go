@@ -252,6 +252,7 @@ func (builder *RoleBuilder) Update() (*RoleBuilder, error) {
 	}
 
 	var err error
+
 	builder.Object, err = builder.apiClient.Roles(builder.Definition.Namespace).Update(
 		context.TODO(), builder.Definition, metav1.UpdateOptions{})
 
@@ -268,6 +269,7 @@ func (builder *RoleBuilder) Exists() bool {
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.apiClient.Roles(builder.Definition.Namespace).Get(
 		context.TODO(), builder.Definition.Name, metav1.GetOptions{})
 

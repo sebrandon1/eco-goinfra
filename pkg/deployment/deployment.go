@@ -448,6 +448,7 @@ func (builder *Builder) Update() (*Builder, error) {
 	glog.V(100).Infof("Updating deployment %s in namespace %s", builder.Definition.Name, builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.apiClient.Deployments(builder.Definition.Namespace).Update(
 		context.TODO(), builder.Definition, metav1.UpdateOptions{})
 
@@ -566,6 +567,7 @@ func (builder *Builder) IsReady(timeout time.Duration) bool {
 	err := wait.PollUntilContextTimeout(
 		context.TODO(), time.Second, timeout, true, func(ctx context.Context) (bool, error) {
 			var err error
+
 			builder.Object, err = builder.apiClient.Deployments(builder.Definition.Namespace).Get(
 				context.TODO(), builder.Definition.Name, metav1.GetOptions{})
 
@@ -621,6 +623,7 @@ func (builder *Builder) Exists() bool {
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.apiClient.Deployments(builder.Definition.Namespace).Get(
 		context.TODO(), builder.Definition.Name, metav1.GetOptions{})
 

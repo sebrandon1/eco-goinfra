@@ -1,5 +1,4 @@
 package nto //nolint:misspell
-
 import (
 	"context"
 	"fmt"
@@ -431,6 +430,7 @@ func (builder *Builder) Exists() bool {
 	glog.V(100).Infof("Checking if PerformanceProfile %s exists", builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)

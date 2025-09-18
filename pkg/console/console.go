@@ -117,6 +117,7 @@ func (builder *Builder) Get() (*configv1.Console, error) {
 	glog.V(100).Infof("Getting Console object %s", builder.Definition.Name)
 
 	console := &configv1.Console{}
+
 	err := builder.apiClient.Get(context.TODO(), runtimeclient.ObjectKey{
 		Name: builder.Definition.Name,
 	}, console)
@@ -161,6 +162,7 @@ func (builder *Builder) Exists() bool {
 	glog.V(100).Infof("Checking if console %s exists", builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)

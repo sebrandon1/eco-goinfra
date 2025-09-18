@@ -248,6 +248,7 @@ func (builder *ManagedClusterBuilder) Exists() bool {
 	glog.V(100).Infof("Checking if ManagedCluster %s exists", builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)
@@ -294,6 +295,7 @@ func (builder *ManagedClusterBuilder) WaitForLabel(
 	err := wait.PollUntilContextTimeout(
 		context.TODO(), 3*time.Second, timeout, true, func(ctx context.Context) (bool, error) {
 			var err error
+
 			builder.Object, err = builder.Get()
 
 			if err != nil {

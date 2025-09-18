@@ -330,6 +330,7 @@ func (builder *AgentClusterInstallBuilder) WaitForState(
 
 	// Polls every second to determine if agentclusterinstall in desired state.
 	var err error
+
 	err = wait.PollUntilContextTimeout(
 		context.TODO(), time.Second, timeout, true, func(ctx context.Context) (bool, error) {
 			builder.Object, err = builder.Get()
@@ -688,6 +689,7 @@ func (builder *AgentClusterInstallBuilder) Exists() bool {
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)

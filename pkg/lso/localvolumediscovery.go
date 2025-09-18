@@ -139,6 +139,7 @@ func (builder *LocalVolumeDiscoveryBuilder) Get() (*lsov1alpha1.LocalVolumeDisco
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	lvd := &lsov1alpha1.LocalVolumeDiscovery{}
+
 	err := builder.apiClient.Get(context.TODO(), goclient.ObjectKey{
 		Name:      builder.Definition.Name,
 		Namespace: builder.Definition.Namespace,

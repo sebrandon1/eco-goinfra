@@ -191,6 +191,7 @@ func (builder *agentBuilder) WaitForState(state string, timeout time.Duration) (
 
 	// Polls every retryInterval to determine if agent is in desired state.
 	var err error
+
 	err = wait.PollUntilContextTimeout(
 		context.TODO(), retryInterval, timeout, true, func(ctx context.Context) (bool, error) {
 			builder.Object, err = builder.Get()
@@ -220,6 +221,7 @@ func (builder *agentBuilder) WaitForStateInfo(stateInfo string, timeout time.Dur
 
 	// Polls every retryInterval to determine if agent is in desired state.
 	var err error
+
 	err = wait.PollUntilContextTimeout(
 		context.TODO(), retryInterval, timeout, true, func(ctx context.Context) (bool, error) {
 			builder.Object, err = builder.Get()
@@ -321,6 +323,7 @@ func (builder *agentBuilder) Exists() bool {
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)

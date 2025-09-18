@@ -198,6 +198,7 @@ func (builder *MCBuilder) Exists() bool {
 	glog.V(100).Infof("Checking if the MachineConfig object %s exists", builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	return err == nil || !k8serrors.IsNotFound(err)

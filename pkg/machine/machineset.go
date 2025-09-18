@@ -175,6 +175,7 @@ func (builder *SetBuilder) Exists() bool {
 		builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.apiClient.MachineSets(builder.Definition.Namespace).Get(context.TODO(),
 		builder.Definition.Name, metav1.GetOptions{})
 
@@ -327,6 +328,7 @@ func (builder *SetBuilder) AWSChangeProviderInstanceType(instanceType string) er
 		instanceType)
 
 	var AWSProviderSpecObject *machinev1beta1.AWSMachineProviderConfig
+
 	err = json.Unmarshal(byteArray, &AWSProviderSpecObject)
 
 	if err != nil {
@@ -378,6 +380,7 @@ func (builder *SetBuilder) GCPChangeProviderMachineType(machineType string) erro
 	glog.V(100).Infof("Updating ProviderSpec MachineType param '%s' for GCP public cloud", machineType)
 
 	var GCPProviderSpecObject *machinev1beta1.GCPMachineProviderSpec
+
 	err = json.Unmarshal(byteArray, &GCPProviderSpecObject)
 
 	if err != nil {
@@ -429,6 +432,7 @@ func (builder *SetBuilder) AzureChangeProviderVMSize(vmSize string) error {
 		vmSize)
 
 	var AzureProviderSpecObject *machinev1beta1.AzureMachineProviderSpec
+
 	err = json.Unmarshal(byteArray, &AzureProviderSpecObject)
 
 	if err != nil {

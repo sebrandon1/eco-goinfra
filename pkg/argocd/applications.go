@@ -297,6 +297,7 @@ func (builder *ApplicationBuilder) WaitForCondition(
 	}
 
 	var err error
+
 	err = wait.PollUntilContextTimeout(
 		context.TODO(), time.Second, timeout, true, func(ctx context.Context) (bool, error) {
 			builder.Object, err = builder.Get()
@@ -417,6 +418,7 @@ func (builder *ApplicationBuilder) WaitForSourceUpdate(synced bool, timeout time
 	return wait.PollUntilContextTimeout(
 		context.TODO(), time.Second, timeout, true, func(ctx context.Context) (bool, error) {
 			var err error
+
 			builder.Object, err = builder.Get()
 
 			if err != nil {

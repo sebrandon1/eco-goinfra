@@ -160,6 +160,7 @@ func (builder *Builder) Exists() bool {
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.apiClient.Services(builder.Definition.Namespace).Get(
 		context.TODO(), builder.Definition.Name, metav1.GetOptions{})
 
@@ -202,6 +203,7 @@ func (builder *Builder) Update() (*Builder, error) {
 		builder.Definition.Name, builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.apiClient.Services(builder.Definition.Namespace).Update(
 		context.TODO(), builder.Definition, metav1.UpdateOptions{})
 

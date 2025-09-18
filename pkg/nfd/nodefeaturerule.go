@@ -184,6 +184,7 @@ func (builder *NodeFeatureRuleBuilder) Exists() bool {
 		builder.Definition.Namespace)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	if err != nil {

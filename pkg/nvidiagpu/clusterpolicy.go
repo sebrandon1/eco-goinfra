@@ -129,6 +129,7 @@ func (builder *Builder) Get() (*nvidiagpuv1.ClusterPolicy, error) {
 		"Collecting ClusterPolicy object %s", builder.Definition.Name)
 
 	clusterPolicy := &nvidiagpuv1.ClusterPolicy{}
+
 	err := builder.apiClient.Get(context.TODO(), runtimeClient.ObjectKey{Name: builder.Definition.Name}, clusterPolicy)
 
 	if err != nil {
@@ -151,6 +152,7 @@ func (builder *Builder) Exists() bool {
 		"Checking if ClusterPolicy %s exists", builder.Definition.Name)
 
 	var err error
+
 	builder.Object, err = builder.Get()
 
 	if err != nil {
